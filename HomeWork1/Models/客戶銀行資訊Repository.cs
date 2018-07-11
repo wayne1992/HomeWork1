@@ -6,6 +6,16 @@ namespace HomeWork1.Models
 {   
 	public  class 客戶銀行資訊Repository : EFRepository<客戶銀行資訊>, I客戶銀行資訊Repository
 	{
+        public override IQueryable<客戶銀行資訊> All()
+        {
+            return base.All().Where(p => p.IsDeleted == false);
+        }
+
+        public override void Delete(客戶銀行資訊 entity)
+        {
+            entity.IsDeleted = true;
+        }
+
         public 客戶銀行資訊 Find(int id)
         {
 

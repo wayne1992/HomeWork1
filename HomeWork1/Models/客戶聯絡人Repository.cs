@@ -6,6 +6,16 @@ namespace HomeWork1.Models
 {   
 	public  class 客戶聯絡人Repository : EFRepository<客戶聯絡人>, I客戶聯絡人Repository
 	{
+        public override IQueryable<客戶聯絡人> All()
+        {
+            return base.All().Where(p => p.IsDeleted == false);
+        }
+
+        public override void Delete(客戶聯絡人 entity)
+        {
+            entity.IsDeleted = true;
+        }
+
         public 客戶聯絡人 Find(int id)
         {
 
