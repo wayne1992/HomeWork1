@@ -17,7 +17,7 @@ namespace HomeWork1.Models
         public int Id { get; set; }
         public int 客戶Id { get; set; }
         public string 銀行名稱 { get; set; }
-        public int 銀行代碼 { get; set; }
+        public string 銀行代碼 { get; set; }
         public Nullable<int> 分行代碼 { get; set; }
         public string 帳戶名稱 { get; set; }
         public string 帳戶號碼 { get; set; }

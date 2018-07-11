@@ -19,6 +19,7 @@ namespace HomeWork1.Models
         public string 客戶名稱 { get; set; }
         
         [StringLength(8, ErrorMessage="欄位長度不得大於 8 個字元")]
+        [MinLength(8, ErrorMessage = "請輸入正確統一編號")]
         [Required]
         public string 統一編號 { get; set; }
         
@@ -28,7 +29,8 @@ namespace HomeWork1.Models
         
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]
         public string 傳真 { get; set; }
-        
+
+        [Required]
         [StringLength(100, ErrorMessage="欄位長度不得大於 100 個字元")]
         public string 地址 { get; set; }
         
