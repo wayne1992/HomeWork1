@@ -10,7 +10,7 @@ using HomeWork1.Models;
 
 namespace HomeWork1.Controllers
 {
-    public class CustomerContactController : Controller
+    public class CustomerContactController : BaseController
     {
         private 客戶資料Entities db = new 客戶資料Entities();
 
