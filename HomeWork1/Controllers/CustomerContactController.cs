@@ -21,6 +21,18 @@ namespace HomeWork1.Controllers
             return View(客戶聯絡人.ToList());
         }
 
+        public ActionResult Search(string Keyword)
+        {
+            var data = db.客戶聯絡人.AsQueryable();
+
+            if (!String.IsNullOrEmpty(Keyword))
+            {
+                data = data.Where(p => p.姓名.Contains(Keyword) || p.Email.Contains(Keyword));
+            }
+
+            return View("Index", data);
+        }
+
         // GET: CustomerContact/Details/5
         public ActionResult Details(int? id)
         {

@@ -5,7 +5,21 @@
 }
 
 <h2>報表</h2>
+<br>
+<div class="container">
+    <div class="row">
+        @using (Html.BeginForm("Search2", "CustomerInformation", FormMethod.Get, new { @class = "form-inline" }))
+        {
+            <div class="form-group">
+                <label for="Keyword"> 關鍵字 : </label>
+                @Html.TextBox("Keyword", null, new { placeholder = "可輸入客戶名稱、統一編號", id = "Keyword", @class = "form-control" })
+            </div>
+            <button type="submit" class="btn btn-info">搜尋</button>
 
+        }
+    </div>
+</div>
+<br>
 
 <table class="table">
     <tr>
@@ -21,18 +35,19 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.客戶名稱)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.聯絡人數量)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.銀行帳戶數量)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.客戶名稱)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.聯絡人數量)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.銀行帳戶數量)
+            </td>
+        </tr>
+    }
 
 </table>

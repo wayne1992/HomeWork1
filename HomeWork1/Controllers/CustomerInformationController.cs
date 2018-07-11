@@ -20,6 +20,17 @@ namespace HomeWork1.Controllers
             return View(db.客戶資料.ToList());
         }
 
+        public ActionResult Search(string Keyword)
+        {
+            var data = db.客戶資料.AsQueryable();
+
+            if (!String.IsNullOrEmpty(Keyword)) {
+                data = data.Where(p => p.客戶名稱.Contains(Keyword) || p.統一編號.Contains(Keyword) ) ;
+            }
+
+            return View("Index", data);
+        }
+
         public ActionResult Index2()
         {
             var data = db.客戶資料
@@ -33,6 +44,30 @@ namespace HomeWork1.Controllers
             return View(data);
         }
 
+
+        public ActionResult Search2(string Keyword)
+        {
+            var data = db.客戶資料
+                .OrderByDescending(p => p.客戶名稱)
+                .Select(p => new TestViewModel()
+                {
+                    客戶名稱 = p.客戶名稱,
+                    聯絡人數量 = db.客戶聯絡人.Count(d => d.客戶Id == p.Id),
+                    銀行帳戶數量 = db.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
+                });
+
+            if (!String.IsNullOrEmpty(Keyword))
+            {
+                data = data.Where(p => p.客戶名稱.Contains(Keyword)).OrderByDescending(p => p.客戶名稱)
+                    .Select(p => new TestViewModel() {
+                        客戶名稱 = p.客戶名稱,
+                        聯絡人數量 = p.聯絡人數量,
+                        銀行帳戶數量 = p.銀行帳戶數量
+                    });
+            }
+
+            return View("Index2", data);
+        }
         // GET: CustomerInformation/Details/5
         public ActionResult Details(int? id)
         {

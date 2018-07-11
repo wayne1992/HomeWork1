@@ -21,6 +21,18 @@ namespace HomeWork1.Controllers
             return View(客戶銀行資訊.ToList());
         }
 
+        public ActionResult Search(string Keyword)
+        {
+            var data = db.客戶銀行資訊.AsQueryable();
+
+            if (!String.IsNullOrEmpty(Keyword))
+            {
+                data = data.Where(p => p.銀行名稱.Contains(Keyword) || p.銀行代碼.Contains(Keyword));
+            }
+
+            return View("Index", data);
+        }
+
         // GET: CustomerBankInformation/Details/5
         public ActionResult Details(int? id)
         {
