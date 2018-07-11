@@ -12,33 +12,31 @@ namespace HomeWork1.Controllers
 {
     public class CustomerInformationController : BaseController
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
-
+        private 客戶資料Entities db2 = new 客戶資料Entities();
+        客戶資料Repository CustomerRepo = RepositoryHelper.Get客戶資料Repository();
         // GET: CustomerInformation
         public ActionResult Index()
         {
-            return View(db.客戶資料.ToList());
+            var data = CustomerRepo.All();
+
+            return View(data);
         }
 
         public ActionResult Search(string Keyword)
         {
-            var data = db.客戶資料.AsQueryable();
-
-            if (!String.IsNullOrEmpty(Keyword)) {
-                data = data.Where(p => p.客戶名稱.Contains(Keyword) || p.統一編號.Contains(Keyword) ) ;
-            }
+            var data = CustomerRepo.Search(Keyword);
 
             return View("Index", data);
         }
 
         public ActionResult Index2()
         {
-            var data = db.客戶資料
+            var data = db2.客戶資料
                 .OrderByDescending(p => p.客戶名稱)
                 .Select(p => new TestViewModel() {
                     客戶名稱 = p.客戶名稱,
-                    聯絡人數量 = db.客戶聯絡人.Count(d => d.客戶Id == p.Id) ,
-                    銀行帳戶數量 = db.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
+                    聯絡人數量 = db2.客戶聯絡人.Count(d => d.客戶Id == p.Id) ,
+                    銀行帳戶數量 = db2.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
                 });
 
             return View(data);
@@ -47,13 +45,13 @@ namespace HomeWork1.Controllers
 
         public ActionResult Search2(string Keyword)
         {
-            var data = db.客戶資料
+            var data = db2.客戶資料
                 .OrderByDescending(p => p.客戶名稱)
                 .Select(p => new TestViewModel()
                 {
                     客戶名稱 = p.客戶名稱,
-                    聯絡人數量 = db.客戶聯絡人.Count(d => d.客戶Id == p.Id),
-                    銀行帳戶數量 = db.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
+                    聯絡人數量 = db2.客戶聯絡人.Count(d => d.客戶Id == p.Id),
+                    銀行帳戶數量 = db2.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
                 });
 
             if (!String.IsNullOrEmpty(Keyword))
@@ -71,11 +69,12 @@ namespace HomeWork1.Controllers
         // GET: CustomerInformation/Details/5
         public ActionResult Details(int? id)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = CustomerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -98,8 +97,8 @@ namespace HomeWork1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                CustomerRepo.Add(客戶資料);
+                CustomerRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -113,7 +112,7 @@ namespace HomeWork1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = CustomerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -130,6 +129,7 @@ namespace HomeWork1.Controllers
         {
             if (ModelState.IsValid)
             {
+                var db = CustomerRepo.UnitOfWork.Context;
                 db.Entry(客戶資料).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -144,7 +144,7 @@ namespace HomeWork1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = CustomerRepo.Find(id.Value);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -157,9 +157,10 @@ namespace HomeWork1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
-            db.SaveChanges();
+            客戶資料 客戶資料 = CustomerRepo.Find(id);
+            CustomerRepo.Delete(客戶資料);
+            CustomerRepo.UnitOfWork.Commit();
+
             return RedirectToAction("Index");
         }
 
@@ -167,7 +168,7 @@ namespace HomeWork1.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                CustomerRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }
