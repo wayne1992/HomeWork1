@@ -29,7 +29,7 @@
           <Property Name="分行代碼" Type="int" />
           <Property Name="帳戶名稱" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="帳戶號碼" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="客戶聯絡人">
           <Key>
@@ -42,7 +42,7 @@
           <Property Name="Email" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="手機" Type="nvarchar" MaxLength="50" />
           <Property Name="電話" Type="nvarchar" MaxLength="50" />
-          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK_客戶銀行資訊_客戶資料">
           <End Role="客戶資料" Type="Self.客戶資料" Multiplicity="1" />
@@ -112,7 +112,7 @@
           <Property Name="手機" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="電話" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="客戶資料" Relationship="Self.FK_客戶聯絡人_客戶資料" FromRole="客戶聯絡人" ToRole="客戶資料" />
-          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_客戶聯絡人_客戶資料">
           <End Role="客戶資料" Type="Self.客戶資料" Multiplicity="1" />
@@ -151,7 +151,7 @@
           <Property Name="帳戶名稱" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="帳戶號碼" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="客戶資料" Relationship="客戶資料Model.FK_客戶銀行資訊_客戶資料" FromRole="客戶銀行資訊" ToRole="客戶資料" />
-          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_客戶銀行資訊_客戶資料">
           <End Type="客戶資料Model.客戶資料" Role="客戶資料" Multiplicity="1" />
