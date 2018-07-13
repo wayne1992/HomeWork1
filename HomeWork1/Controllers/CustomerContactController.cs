@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using HomeWork1.Models;
+using HomeWork1.Models.CustomResults;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HomeWork1.Controllers
 {
@@ -23,10 +26,42 @@ namespace HomeWork1.Controllers
             CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository(CustomerRepo.UnitOfWork);
         }
         // GET: CustomerContact
-        public ActionResult Index()
+        public ActionResult Index(string IsExport)
         {
             var data = CustomerContactRepo.All().Include(p => p.客戶資料);
             //var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
+            if (!string.IsNullOrEmpty(IsExport))
+            {
+
+                JArray jObjects = new JArray();
+
+                foreach (var item in data)
+                {
+                    var jo = new JObject();
+                    jo.Add("職稱", item.職稱);
+                    jo.Add("姓名", item.姓名);
+                    jo.Add("Email", item.Email);
+                    jo.Add("手機", item.手機);
+                    jo.Add("電話", item.電話);
+                    
+                    jObjects.Add(jo);
+                }
+
+                var exportSpource = jObjects;
+                var dt = JsonConvert.DeserializeObject<DataTable>(exportSpource.ToString());
+
+                var exportFileName = string.Concat(
+                    "客戶聯絡人_",
+                    DateTime.Now.ToString("yyyyMMddHHmmss"),
+                    ".xlsx");
+
+                return new ExportExcelResult
+                {
+                    SheetName = "客戶聯絡人",
+                    FileName = exportFileName,
+                    ExportData = dt
+                };
+            }
             return View(data);
         }
 

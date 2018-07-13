@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using HomeWork1.Models;
+using HomeWork1.Models.CustomResults;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HomeWork1.Controllers
 {
@@ -22,10 +25,44 @@ namespace HomeWork1.Controllers
         }
 
         // GET: CustomerBankInformation
-        public ActionResult Index()
+        public ActionResult Index(string IsExport)
         {
             var data = CustomerBankRepo.All().Include(p => p.客戶資料);
             //var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
+            if (!string.IsNullOrEmpty(IsExport))
+            {
+
+                JArray jObjects = new JArray();
+
+                foreach (var item in data)
+                {
+                    var jo = new JObject();
+                    var Custom = CustomerRepo.Where(p => p.Id == item.客戶Id).Select(p => new { p.客戶名稱 });
+
+                    jo.Add("銀行名稱", item.銀行名稱);
+                    jo.Add("銀行代碼", item.銀行代碼);
+                    jo.Add("分行代碼", item.分行代碼);
+                    jo.Add("帳戶名稱", item.帳戶名稱);
+                    jo.Add("帳戶號碼", item.帳戶號碼);
+                    //jo.Add("客戶名稱", Custom.ToString());
+                    jObjects.Add(jo);
+                }
+
+                var exportSpource = jObjects;
+                var dt = JsonConvert.DeserializeObject<DataTable>(exportSpource.ToString());
+
+                var exportFileName = string.Concat(
+                    "客戶銀行資訊_",
+                    DateTime.Now.ToString("yyyyMMddHHmmss"),
+                    ".xlsx");
+
+                return new ExportExcelResult
+                {
+                    SheetName = "客戶銀行資訊",
+                    FileName = exportFileName,
+                    ExportData = dt
+                };
+            }
             return View(data);
         }
 
