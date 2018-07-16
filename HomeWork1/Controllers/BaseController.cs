@@ -9,15 +9,16 @@ namespace HomeWork1.Controllers
 {
     public abstract class BaseController : Controller
     {
-        //客戶資料Repository CustomerRepo;
-        //客戶銀行資訊Repository CustomerBankRepo;
-        //客戶聯絡人Repository CustomerContactRepo;
+        public 客戶資料Repository CustomerRepo;
+        public 客戶銀行資訊Repository CustomerBankRepo;
+        public 客戶聯絡人Repository CustomerContactRepo;
 
-        //protected BaseController() {
-        //    CustomerRepo = RepositoryHelper.Get客戶資料Repository();
-        //    CustomerBankRepo = RepositoryHelper.Get客戶銀行資訊Repository(CustomerRepo.UnitOfWork);
-        //    CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository(CustomerRepo.UnitOfWork);
-        //}
+        public BaseController()
+        {
+            CustomerRepo = RepositoryHelper.Get客戶資料Repository();
+            CustomerBankRepo = RepositoryHelper.Get客戶銀行資訊Repository(CustomerRepo.UnitOfWork);
+            CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository(CustomerRepo.UnitOfWork);
+        }
 
         protected override void HandleUnknownAction(string actionName)
         {
