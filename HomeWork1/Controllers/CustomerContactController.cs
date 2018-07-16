@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML.Excel;
 using HomeWork1.Models;
 using HomeWork1.Models.CustomResults;
 using Newtonsoft.Json;
@@ -17,51 +19,19 @@ namespace HomeWork1.Controllers
     {
         //private 客戶資料Entities db = new 客戶資料Entities();
 
-        客戶資料Repository CustomerRepo;
-        客戶聯絡人Repository CustomerContactRepo;
+        //客戶資料Repository CustomerRepo;
+        //客戶聯絡人Repository CustomerContactRepo;
 
         public CustomerContactController()
         {
-            CustomerRepo = RepositoryHelper.Get客戶資料Repository();
-            CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository(CustomerRepo.UnitOfWork);
+            //CustomerRepo = RepositoryHelper.Get客戶資料Repository();
+           // CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository(CustomerRepo.UnitOfWork);
         }
         // GET: CustomerContact
-        public ActionResult Index(string IsExport)
+        public ActionResult Index()
         {
             var data = CustomerContactRepo.All().Include(p => p.客戶資料);
-            //var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            if (!string.IsNullOrEmpty(IsExport))
-            {
-
-                JArray jObjects = new JArray();
-
-                foreach (var item in data)
-                {
-                    var jo = new JObject();
-                    jo.Add("職稱", item.職稱);
-                    jo.Add("姓名", item.姓名);
-                    jo.Add("Email", item.Email);
-                    jo.Add("手機", item.手機);
-                    jo.Add("電話", item.電話);
-                    
-                    jObjects.Add(jo);
-                }
-
-                var exportSpource = jObjects;
-                var dt = JsonConvert.DeserializeObject<DataTable>(exportSpource.ToString());
-
-                var exportFileName = string.Concat(
-                    "客戶聯絡人_",
-                    DateTime.Now.ToString("yyyyMMddHHmmss"),
-                    ".xlsx");
-
-                return new ExportExcelResult
-                {
-                    SheetName = "客戶聯絡人",
-                    FileName = exportFileName,
-                    ExportData = dt
-                };
-            }
+            
             return View(data);
         }
 
@@ -70,6 +40,38 @@ namespace HomeWork1.Controllers
             var data = CustomerContactRepo.Search(Keyword);
 
             return View("Index", data);
+        }
+
+        public ActionResult CustomerExcel(string sheetName, string fileName)
+        {
+            if (String.IsNullOrEmpty(sheetName))
+            {
+                sheetName = "工作表1";
+            }
+            if (String.IsNullOrEmpty(fileName))
+            {
+                fileName = string.Concat(DateTime.Now.ToString("yyyyMMddHHmmss"), ".xlsx");
+            }
+
+            var data = CustomerContactRepo.All().Select(p => new { p.職稱, p.姓名, p.Email, p.手機, p.電話, p.客戶資料.客戶名稱 });
+            var workbook = new XLWorkbook();
+            var MymemoryStream = new MemoryStream();
+            //設置默認Style
+            var style = workbook.Style;
+            style.Font.FontName = "Microsoft YaHei";
+            style.Font.FontSize = 16;
+            var worksheet = workbook.Worksheets.Add(sheetName);
+            worksheet.Cell(1, 1).Value = "職稱";
+            worksheet.Cell(1, 2).Value = "姓名";
+            worksheet.Cell(1, 3).Value = "Email";
+            worksheet.Cell(1, 4).Value = "手機";
+            worksheet.Cell(1, 5).Value = "電話";
+            worksheet.Cell(1, 6).Value = "客戶名稱";
+            worksheet.Cell(2, 1).InsertData(data);
+
+            workbook.SaveAs(MymemoryStream);
+
+            return File(MymemoryStream.ToArray(), "application/vnd.ms-excel", fileName);
         }
 
         // GET: CustomerContact/Details/5

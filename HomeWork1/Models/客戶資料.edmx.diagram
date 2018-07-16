@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b854fad8ee5a41c18ef98d655679c5ed" Name="Diagram1" ZoomLevel="59">
+      <Diagram DiagramId="b854fad8ee5a41c18ef98d655679c5ed" Name="Diagram1" ZoomLevel="116">
         <EntityTypeShape EntityType="客戶資料Model.客戶資料" Width="1.5" PointX="0.75" PointY="2.625" IsExpanded="true" />
         <EntityTypeShape EntityType="客戶資料Model.客戶聯絡人" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
         <AssociationConnector Association="客戶資料Model.FK_客戶聯絡人_客戶資料" ManuallyRouted="false" />

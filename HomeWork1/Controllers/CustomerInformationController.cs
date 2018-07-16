@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML.Excel;
 using HomeWork1.Models;
 using HomeWork1.Models.CustomResults;
 using Newtonsoft.Json;
@@ -16,46 +18,47 @@ namespace HomeWork1.Controllers
     public class CustomerInformationController : BaseController
     {
         private 客戶資料Entities db2 = new 客戶資料Entities();
-        客戶資料Repository CustomerRepo = RepositoryHelper.Get客戶資料Repository();
+        //客戶資料Repository CustomerRepo = RepositoryHelper.Get客戶資料Repository();
         // GET: CustomerInformation
-        public ActionResult Index(string IsExport)
+        public ActionResult Index()
         {
             var data = CustomerRepo.All();
-            if (!string.IsNullOrEmpty(IsExport)) {
 
-                JArray jObjects = new JArray();
-
-                foreach (var item in data)
-                {
-                    var jo = new JObject();
-                    jo.Add("客戶名稱", item.客戶名稱);
-                    jo.Add("統一編號", item.統一編號);
-                    jo.Add("電話", item.電話);
-                    jo.Add("傳真", item.傳真);
-                    jo.Add("地址", item.地址);
-                    jo.Add("Email", item.Email);
-                    jObjects.Add(jo);
-                }
-
-                var exportSpource = jObjects;
-                var dt = JsonConvert.DeserializeObject<DataTable>(exportSpource.ToString());
-
-                var exportFileName = string.Concat(
-                    "客戶資料_",
-                    DateTime.Now.ToString("yyyyMMddHHmmss"),
-                    ".xlsx");
-
-                return new ExportExcelResult
-                {
-                    SheetName = "客戶資料",
-                    FileName = exportFileName,
-                    ExportData = dt
-                };
-            }
             return View(data);
         }
 
-        public ActionResult Search(string Keyword, string IsExport)
+        public ActionResult CustomerExcel(string sheetName, string fileName)
+        {
+            if (String.IsNullOrEmpty(sheetName)) {
+                sheetName = "工作表1";
+            }
+            if (String.IsNullOrEmpty(fileName))
+            {
+                fileName = string.Concat(DateTime.Now.ToString("yyyyMMddHHmmss"), ".xlsx");
+            }
+            
+            var data = CustomerRepo.All().Select( p => new {p.客戶名稱, p.統一編號, p.電話, p.傳真, p.地址, p.Email } );
+            var workbook = new XLWorkbook();
+            var MymemoryStream = new MemoryStream();
+            //設置默認Style
+            var style = workbook.Style;
+            style.Font.FontName = "Microsoft YaHei";
+            style.Font.FontSize = 16;
+            var worksheet = workbook.Worksheets.Add(sheetName);
+            worksheet.Cell(1, 1).Value = "客戶名稱";
+            worksheet.Cell(1, 2).Value = "統一編號";
+            worksheet.Cell(1, 3).Value = "電話";
+            worksheet.Cell(1, 4).Value = "傳真";
+            worksheet.Cell(1, 5).Value = "地址";
+            worksheet.Cell(1, 6).Value = "Email";
+            worksheet.Cell(2, 1).InsertData(data);
+            
+            workbook.SaveAs(MymemoryStream);
+
+            return File(MymemoryStream.ToArray(), "application/vnd.ms-excel", fileName);
+        }
+
+        public ActionResult Search(string Keyword)
         {
             var data = CustomerRepo.Search(Keyword);
             
@@ -64,13 +67,23 @@ namespace HomeWork1.Controllers
 
         public ActionResult Index2(string IsExport)
         {
-            var data = db2.客戶資料
+            //var data = db2.客戶資料
+            //    .OrderByDescending(p => p.客戶名稱)
+            //    .Select(p => new TestViewModel() {
+            //        客戶名稱 = p.客戶名稱,
+            //        聯絡人數量 = db2.客戶聯絡人.Count(d => d.客戶Id == p.Id) ,
+            //        銀行帳戶數量 = db2.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
+            //    });
+
+            var data = CustomerRepo.All()
                 .OrderByDescending(p => p.客戶名稱)
-                .Select(p => new TestViewModel() {
+                .Select(p => new TestViewModel()
+                {
                     客戶名稱 = p.客戶名稱,
-                    聯絡人數量 = db2.客戶聯絡人.Count(d => d.客戶Id == p.Id) ,
-                    銀行帳戶數量 = db2.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
+                    聯絡人數量 = p.客戶聯絡人.Count(d => d.客戶Id == p.Id),
+                    銀行帳戶數量 = p.客戶銀行資訊.Count(b => b.客戶Id == p.Id)
                 });
+
             if (!string.IsNullOrEmpty(IsExport))
             {
 
