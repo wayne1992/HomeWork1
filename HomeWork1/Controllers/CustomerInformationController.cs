@@ -18,11 +18,19 @@ namespace HomeWork1.Controllers
     public class CustomerInformationController : BaseController
     {
         private 客戶資料Entities db2 = new 客戶資料Entities();
+        Dictionary<int, string> classification = new Dictionary<int, string>();
         //客戶資料Repository CustomerRepo = RepositoryHelper.Get客戶資料Repository();
         // GET: CustomerInformation
+        public CustomerInformationController(){
+            
+            classification.Add(1,"科技業");
+            classification.Add(2, "傳產業");
+            classification.Add(3, "航太業");
+        }
         public ActionResult Index()
         {
             var data = CustomerRepo.All();
+            ViewBag.classification = classification;
 
             return View(data);
         }
@@ -61,6 +69,7 @@ namespace HomeWork1.Controllers
         public ActionResult Search(string Keyword)
         {
             var data = CustomerRepo.Search(Keyword);
+
             
             return View("Index", data);
         }
@@ -159,6 +168,17 @@ namespace HomeWork1.Controllers
         // GET: CustomerInformation/Create
         public ActionResult Create()
         {
+            var items = (from p in classification
+                         select p.Key)
+                         .Distinct()
+                         .OrderBy(p => p)
+                         .Select(p => new SelectListItem()
+                         {
+                             Text = classification[p].ToString(),
+                             Value = p.ToString()
+                         });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
+
             return View();
         }
 
@@ -167,15 +187,25 @@ namespace HomeWork1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
         {
+
             if (ModelState.IsValid)
             {
                 CustomerRepo.Add(客戶資料);
                 CustomerRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-
+            var items = (from p in classification
+                         select p.Key)
+                         .Distinct()
+                         .OrderBy(p => p)
+                         .Select(p => new SelectListItem()
+                         {
+                             Text = classification[p].ToString(),
+                             Value = p.ToString()
+                         });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
             return View(客戶資料);
         }
 
@@ -191,6 +221,18 @@ namespace HomeWork1.Controllers
             {
                 return HttpNotFound();
             }
+
+            var items = (from p in classification
+                         select p.Key)
+                         .Distinct()
+                         .OrderBy(p => p)
+                         .Select(p => new SelectListItem()
+                         {
+                             Text = classification[p].ToString(),
+                             Value = p.ToString()
+                         });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text" , 客戶資料.客戶分類);
+
             return View(客戶資料);
         }
 
@@ -199,7 +241,7 @@ namespace HomeWork1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
@@ -208,6 +250,18 @@ namespace HomeWork1.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
+            var items = (from p in classification
+                         select p.Key)
+                        .Distinct()
+                        .OrderBy(p => p)
+                        .Select(p => new SelectListItem()
+                        {
+                            Text = classification[p].ToString(),
+                            Value = p.ToString()
+                        });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text", 客戶資料.客戶分類);
+
             return View(客戶資料);
         }
 

@@ -40,6 +40,9 @@ namespace HomeWork1.Models
 
         public bool IsDeleted { get; set; }
 
+        [Required(ErrorMessage ="請選擇客戶分類")]
+        public Nullable<int> 客戶分類 { get; set; }
+
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
     }
