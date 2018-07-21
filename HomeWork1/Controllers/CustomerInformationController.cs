@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using ClosedXML.Excel;
 using HomeWork1.Models;
 using HomeWork1.Models.CustomResults;
+using Microsoft.Web.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -27,12 +28,31 @@ namespace HomeWork1.Controllers
             classification.Add(2, "傳產業");
             classification.Add(3, "航太業");
         }
-        public ActionResult Index()
+        public ActionResult Index(string sortType, string colName)
         {
-            var data = CustomerRepo.All();
+            var data = CustomerRepo.All(sortType, colName);
+            var items = (from p in classification
+                         select p.Key)
+                         .Distinct()
+                         .OrderBy(p => p)
+                         .Select(p => new SelectListItem()
+                         {
+                             Text = classification[p].ToString(),
+                             Value = p.ToString()
+                         });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
             ViewBag.classification = classification;
 
             return View(data);
+        }
+
+
+        [ChildActionOnly]//限定由頁面呼叫存取
+        public ActionResult CustomerContactList(int id)
+        {
+            ViewData.Model = CustomerRepo.Find(id).客戶聯絡人.ToList(); 
+
+            return PartialView("CustomerContactList");
         }
 
         public ActionResult CustomerExcel(string sheetName, string fileName)
@@ -66,14 +86,29 @@ namespace HomeWork1.Controllers
             return File(MymemoryStream.ToArray(), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult Search(string Keyword)
+        public ActionResult Search(string Keyword, int? 客戶分類)
         {
-            var data = CustomerRepo.Search(Keyword);
+            var data = CustomerRepo.Search(Keyword, 客戶分類);
+            var items = (from p in classification
+                         select p.Key)
+                         .Distinct()
+                         .OrderBy(p => p)
+                         .Select(p => new SelectListItem()
+                         {
+                             Text = classification[p].ToString(),
+                             Value = p.ToString()
+                         });
+            ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
+            ViewBag.classification = classification;
 
-            
             return View("Index", data);
         }
+        [AjaxOnly]
+        public ActionResult AjaxResort(string sortType, string colName)
+        {
 
+            return View();
+        }
         public ActionResult Index2(string IsExport)
         {
             //var data = db2.客戶資料

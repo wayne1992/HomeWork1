@@ -60,7 +60,19 @@
 
     </dl>
 </div>
+
+<h2>客戶聯絡人清單</h2>
+
+@Html.Partial("CustomerContactList", Model.客戶聯絡人)
+
+
+<h2>客戶聯絡人清單</h2>
+
+@Html.Action("CustomerContactList", new { id = Model.Id })
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+

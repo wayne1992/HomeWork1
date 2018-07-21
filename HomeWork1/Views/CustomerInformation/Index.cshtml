@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<HomeWork1.Models.客戶資料>
 
 @{
-                /**/
+    /**/
 
-                ViewBag.Title = "Index";
+    ViewBag.Title = "Index";
 }
 
 <h2>客戶資料</h2>
@@ -15,6 +15,11 @@
             <div class="form-group">
                 <label for="Keyword"> 關鍵字 : </label>
                 @Html.TextBox("Keyword", null, new { placeholder = "可輸入客戶名稱、統一編號", id = "Keyword", @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <label for="Keyword"> 客戶分類 : </label>
+                @Html.DropDownList("客戶分類", null, "--請選擇--", new { @class = "form-control" })
             </div>
             <button type="submit" class="btn btn-info">搜尋</button>
 
@@ -31,58 +36,98 @@
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.客戶名稱)
+            <a href="#" onclick="sort(this, '客戶名稱')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.統一編號)
+            <a href="#" onclick="sort(this, '統一編號')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.電話)
+            <a href="#" onclick="sort(this, '電話')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.傳真)
+            <a href="#" onclick="sort(this, '傳真')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.地址)
+            <a href="#" onclick="sort(this, '地址')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Email)
+            <a href="#" onclick="sort(this, 'Email')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.客戶分類)
+            <a href="#" onclick="sort(this, '客戶分類')" data-sort="0"><i class="glyphicon glyphicon-sort-by-attributes"></i></a>
         </th>
         <th></th>
     </tr>
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.客戶名稱)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.統一編號)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.電話)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.傳真)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.地址)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @ViewBag.classification[Convert.ToInt32(item.客戶分類)]
-        </td>
-        <td>
-            @Html.ActionLink("編輯", "Edit", new { id = item.Id }, new { @class = "btn btn-success btn-xs" }) |
-            @Html.ActionLink("明細", "Details", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" }) |
-            @Html.ActionLink("刪除", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-xs" })
-        </td>
-    </tr>
-}
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.客戶名稱)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.統一編號)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.電話)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.傳真)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.地址)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @ViewBag.classification[Convert.ToInt32(item.客戶分類)]
+            </td>
+            <td>
+                @Html.ActionLink("編輯", "Edit", new { id = item.Id }, new { @class = "btn btn-success btn-xs" }) |
+                @Html.ActionLink("明細", "Details", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" }) |
+                @Html.ActionLink("刪除", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-xs" })
+            </td>
+        </tr>
+    }
 
 </table>
+
+
+<script>
+    function sort(sortCloum, colName) {
+        //1 DESC
+        //0 ASC
+        $sortCloum = $(sortCloum);
+        if ($sortCloum.data('sort') == 0) {
+            $sortCloum.data('sort', 1);
+            $sortCloum.html('<i class="glyphicon glyphicon-sort-by-attributes-alt"></i>');
+            sort_Ajax('DESC', colName);
+        } else {
+            $sortCloum.data('sort', 0);
+            $sortCloum.html('<i class="glyphicon glyphicon-sort-by-attributes"></i>');
+            sort_Ajax('ASC', colName);
+        }
+        console.log($sortCloum.data('sort'));
+    }
+
+    function sort_Ajax(sort, colName) {
+        $.ajax({
+            url: 'CustomerInformation/Index',
+            data: {
+                'sortType': sort,
+                'colName': colName
+            },
+            contentType: "application/json",
+            success: function () {
+
+            }
+        });
+    }
+</script>
