@@ -28,6 +28,8 @@ namespace HomeWork1.Controllers
             classification.Add(2, "傳產業");
             classification.Add(3, "航太業");
         }
+
+        [ActionResultTime]
         public ActionResult Index(string sortType, string colName)
         {
             var data = CustomerRepo.All(sortType, colName);
