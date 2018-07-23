@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HomeWork1.Models.客戶資料>
+﻿@model IEnumerable<客戶資料>
 
 @{
     /**/
@@ -10,7 +10,7 @@
 <br>
 <div class="container">
     <div class="row">
-        @using (Html.BeginForm("Search", "CustomerInformation", FormMethod.Get, new { @class = "form-inline" }))
+        @using (Html.BeginForm("Index", "CustomerInformation", FormMethod.Get, new { @class = "form-inline" }))
         {
             <div class="form-group">
                 <label for="Keyword"> 關鍵字 : </label>
@@ -99,6 +99,7 @@
 
 </table>
 
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page, Keyword = ViewBag.Keyword, 客戶分類 = ViewBag.客戶分類Id }))
 
 <script>
     function sort(sortCloum, colName) {

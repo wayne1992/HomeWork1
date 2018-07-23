@@ -35,7 +35,7 @@ namespace HomeWork1.Models
                             return base.All().Where(p => p.IsDeleted == false).OrderByDescending(p => p.客戶分類);
 
                         default:
-                            return base.All().Where(p => p.IsDeleted == false);    
+                            return base.All().Where(p => p.IsDeleted == false).OrderBy(p => p.Id);    
                     }
                     
                 }
@@ -65,14 +65,14 @@ namespace HomeWork1.Models
                             return base.All().Where(p => p.IsDeleted == false).OrderBy(p => p.客戶分類);
 
                         default:
-                            return base.All().Where(p => p.IsDeleted == false);
+                            return base.All().Where(p => p.IsDeleted == false).OrderBy(p => p.Id);
                     }
                 }
 
             }
             else
             {
-                return base.All().Where(p => p.IsDeleted == false);
+                return base.All().Where(p => p.IsDeleted == false).OrderBy(p => p.Id);
             }
 
             
@@ -88,8 +88,8 @@ namespace HomeWork1.Models
             return this.All().FirstOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<客戶資料> Search(string Keyword, int? classification) {
-            var data = this.All();
+        public IQueryable<客戶資料> Search(string Keyword, int? classification, string sortType, string colName) {
+            var data = this.All(sortType, colName);
 
             if (!String.IsNullOrEmpty(Keyword))
             {
@@ -99,6 +99,9 @@ namespace HomeWork1.Models
             {
                 data = data.Where(p => p.客戶分類 == classification);
             }
+
+            data = data.OrderBy(p => p.Id);
+
             return data;
         }
 	}

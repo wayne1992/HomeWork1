@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using X.PagedList;
+
 
 namespace HomeWork1.Controllers
 {
@@ -12,6 +14,8 @@ namespace HomeWork1.Controllers
         public 客戶資料Repository CustomerRepo;
         public 客戶銀行資訊Repository CustomerBankRepo;
         public 客戶聯絡人Repository CustomerContactRepo;
+
+        protected int pageSize = 1;
 
         public BaseController()
         {

@@ -13,6 +13,7 @@ using HomeWork1.Models.CustomResults;
 using Microsoft.Web.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using X.PagedList;
 
 namespace HomeWork1.Controllers
 {
@@ -30,9 +31,10 @@ namespace HomeWork1.Controllers
         }
 
         [ActionResultTime]
-        public ActionResult Index(string sortType, string colName)
+        public ActionResult Index(string Keyword, int? 客戶分類, string sortType, string colName, int page = 1)
         {
-            var data = CustomerRepo.All(sortType, colName);
+            //var data = CustomerRepo.All(sortType, colName).ToPagedList(Page, pageSize);
+            var data = CustomerRepo.Search(Keyword, 客戶分類, sortType, colName);
             var items = (from p in classification
                          select p.Key)
                          .Distinct()
@@ -45,7 +47,10 @@ namespace HomeWork1.Controllers
             ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
             ViewBag.classification = classification;
 
-            return View(data);
+            ViewBag.Keyword = Keyword;
+            ViewBag.客戶分類Id = 客戶分類;
+            var Result = data.ToPagedList(page, pageSize);
+            return View(Result);
         }
 
 
@@ -88,23 +93,26 @@ namespace HomeWork1.Controllers
             return File(MymemoryStream.ToArray(), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult Search(string Keyword, int? 客戶分類)
-        {
-            var data = CustomerRepo.Search(Keyword, 客戶分類);
-            var items = (from p in classification
-                         select p.Key)
-                         .Distinct()
-                         .OrderBy(p => p)
-                         .Select(p => new SelectListItem()
-                         {
-                             Text = classification[p].ToString(),
-                             Value = p.ToString()
-                         });
-            ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
-            ViewBag.classification = classification;
+        //public ActionResult Search(string Keyword, int? 客戶分類, int Page = 1)
+        //{
+            //var data = CustomerRepo.Search(Keyword, 客戶分類);
+            //var items = (from p in classification
+            //             select p.Key)
+            //             .Distinct()
+            //             .OrderBy(p => p)
+            //             .Select(p => new SelectListItem()
+            //             {
+            //                 Text = classification[p].ToString(),
+            //                 Value = p.ToString()
+            //             });
+            //ViewBag.客戶分類 = new SelectList(items, "Value", "Text");
+            //ViewBag.classification = classification;
+            //ViewBag.Keyword = Keyword;
+            //ViewBag.客戶分類Id = 客戶分類;
+            //var Result = data.ToPagedList(Page, pageSize);
 
-            return View("Index", data);
-        }
+            //return View("Index", Result);
+        //}
         [AjaxOnly]
         public ActionResult AjaxResort(string sortType, string colName)
         {

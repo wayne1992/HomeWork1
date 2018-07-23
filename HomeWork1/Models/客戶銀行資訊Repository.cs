@@ -8,7 +8,7 @@ namespace HomeWork1.Models
 	{
         public override IQueryable<客戶銀行資訊> All()
         {
-            return base.All().Where(p => p.IsDeleted == false);
+            return base.All().Where(p => p.IsDeleted == false).OrderBy(p => p.Id);
         }
 
         public override void Delete(客戶銀行資訊 entity)

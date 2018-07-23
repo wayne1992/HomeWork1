@@ -12,6 +12,7 @@ using HomeWork1.Models;
 using HomeWork1.Models.CustomResults;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using X.PagedList;
 
 namespace HomeWork1.Controllers
 {
@@ -30,45 +31,13 @@ namespace HomeWork1.Controllers
 
         }
         // GET: CustomerBankInformation
-        public ActionResult Index()
+        public ActionResult Index(string Keyword, int page = 1)
         {
-            var data = CustomerBankRepo.All().Include(p => p.客戶資料);
+            var data = CustomerBankRepo.Search(Keyword).Include(p => p.客戶資料);
+            ViewBag.Keyword = Keyword;
+            var Result = data.ToPagedList(page, pageSize);
 
-            //if (!string.IsNullOrEmpty(IsExport))
-            //{
-
-            //    JArray jObjects = new JArray();
-
-            //    foreach (var item in data)
-            //    {
-            //        var jo = new JObject();
-            //        var Custom = CustomerRepo.Where(p => p.Id == item.客戶Id).FirstOrDefault().客戶名稱 ;
-
-            //        jo.Add("銀行名稱", item.銀行名稱);
-            //        jo.Add("銀行代碼", item.銀行代碼);
-            //        jo.Add("分行代碼", item.分行代碼);
-            //        jo.Add("帳戶名稱", item.帳戶名稱);
-            //        jo.Add("帳戶號碼", item.帳戶號碼);
-            //        jo.Add("客戶名稱", Custom.ToString());
-            //        jObjects.Add(jo);
-            //    }
-
-            //    var exportSpource = jObjects;
-            //    var dt = JsonConvert.DeserializeObject<DataTable>(exportSpource.ToString());
-
-            //    var exportFileName = string.Concat(
-            //        "客戶銀行資訊_",
-            //        DateTime.Now.ToString("yyyyMMddHHmmss"),
-            //        ".xlsx");
-
-            //    return new ExportExcelResult
-            //    {
-            //        SheetName = "客戶銀行資訊",
-            //        FileName = exportFileName,
-            //        ExportData = dt
-            //    };
-            //}
-            return View(data);
+            return View(Result);
         }
 
         public ActionResult Search(string Keyword)

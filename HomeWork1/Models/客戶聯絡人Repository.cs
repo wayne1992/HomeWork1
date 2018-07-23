@@ -24,7 +24,7 @@ namespace HomeWork1.Models
 
         public IQueryable<客戶聯絡人> Search(string Keyword)
         {
-            var data = this.All();
+            var data = this.All().Where(p => p.IsDeleted == false);
 
             if (!String.IsNullOrEmpty(Keyword))
             {
