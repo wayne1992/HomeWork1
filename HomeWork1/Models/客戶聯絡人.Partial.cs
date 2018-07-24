@@ -7,25 +7,26 @@ namespace HomeWork1.Models
     using System.Linq;
 
     [MetadataType(typeof(客戶聯絡人MetaData))]
-    public partial class 客戶聯絡人 : IValidatableObject
+    public partial class 客戶聯絡人
+    //public partial class 客戶聯絡人 : IValidatableObject
     {
         客戶資料Repository CustomerRepo = RepositoryHelper.Get客戶資料Repository();
         客戶聯絡人Repository CustomerContactRepo = RepositoryHelper.Get客戶聯絡人Repository();
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var data = CustomerContactRepo.All().Count(P => P.客戶Id == this.客戶Id);
+        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        //{
+            //var data = CustomerContactRepo.All().Count(P => P.客戶Id == this.客戶Id);
 
-            if (data > 0)
-            {
-                var EmailIsDuplicate = CustomerContactRepo.All().Count(p => p.Email == this.Email && p.客戶Id == this.客戶Id);
-                if (EmailIsDuplicate > 0)
-                {
-                    yield return new ValidationResult("此客戶已有重複的聯絡人Email", new string[] { "Email" });
-                }
-            }
-            
-        }
+            //if (data > 0)
+            //{
+            //    var EmailIsDuplicate = CustomerContactRepo.All().Count(p => p.Email == this.Email && p.客戶Id == this.客戶Id);
+            //    if (EmailIsDuplicate > 0)
+            //    {
+            //        yield return new ValidationResult("此客戶已有重複的聯絡人Email", new string[] { "Email" });
+            //    }
+            //}
+
+        //}
     }
     
     public partial class 客戶聯絡人MetaData

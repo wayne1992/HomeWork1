@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,6 +34,29 @@ namespace HomeWork1.Controllers
             var data = CustomerContactRepo.All().Include(p => p.客戶資料);
             
             return View(data);
+        }
+
+        [HandleError(ExceptionType = typeof(DbEntityValidationException), View = "Error_DbEntityValidationException")]
+        public ActionResult BatchUpdate(BatchUpdateContactVM[] data)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var vm in data)
+                {
+                    var Contact = CustomerContactRepo.Find(vm.Id);
+                    Contact.職稱 = vm.職稱;
+                    Contact.手機 = vm.手機;
+                    Contact.電話 = vm.電話;
+                }
+
+                CustomerContactRepo.UnitOfWork.Commit();
+
+                return RedirectToAction("Index");
+            }
+
+            ViewData.Model = CustomerContactRepo.All();
+
+            return View("Index");
         }
 
         public ActionResult Search(string Keyword)

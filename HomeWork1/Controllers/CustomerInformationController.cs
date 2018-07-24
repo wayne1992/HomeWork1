@@ -93,6 +93,7 @@ namespace HomeWork1.Controllers
             return File(MymemoryStream.ToArray(), "application/vnd.ms-excel", fileName);
         }
 
+        
         //public ActionResult Search(string Keyword, int? 客戶分類, int Page = 1)
         //{
             //var data = CustomerRepo.Search(Keyword, 客戶分類);
