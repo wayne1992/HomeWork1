@@ -37,7 +37,7 @@ namespace HomeWork1.Controllers
             ViewBag.Keyword = Keyword;
             var Result = data.ToPagedList(page, pageSize);
 
-            return View(Result);
+            return View("Index2", Result);
         }
 
         public ActionResult Search(string Keyword)
