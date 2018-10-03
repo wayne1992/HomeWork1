@@ -104,7 +104,14 @@ namespace HomeWork1.Models
 
             return data;
         }
-	}
+
+        public IQueryable<客戶資料> Login(string Account, string Password)
+        {
+            var data = this.All().Where(p => p.Account == Account && p.Password == Password);
+
+            return data;
+        }
+    }
 
 	public  interface I客戶資料Repository : IRepository<客戶資料>
 	{

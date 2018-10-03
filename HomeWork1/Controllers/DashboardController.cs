@@ -9,6 +9,7 @@ namespace HomeWork1.Controllers
     public class DashboardController : Controller
     {
         // GET: Dashboard
+        [NeedLogin]
         public ActionResult Index()
         {
             return View();

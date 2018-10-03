@@ -30,6 +30,8 @@ namespace HomeWork1.Models
         public string Email { get; set; }
         public bool IsDeleted { get; set; }
         public Nullable<int> 客戶分類 { get; set; }
+        public string Account { get; set; }
+        public string Password { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }

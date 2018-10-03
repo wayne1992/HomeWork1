@@ -185,6 +185,8 @@
     <Compile Include="Controllers\CustomerInformationController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\NeedLoginAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,6 +213,7 @@
     <Compile Include="Models\IUnitOfWork.cs">
       <DependentUpon>IRepository.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\LoginVM.cs" />
     <Compile Include="Models\RepositoryHelper.cs">
       <DependentUpon>IRepository.tt</DependentUpon>
     </Compile>
@@ -716,6 +719,8 @@
     <Content Include="Views\Shared\_LayoutMetronic.cshtml" />
     <Content Include="Views\Dashboard\_ViewStart.cshtml" />
     <Content Include="Views\CustomerBankInformation\Index2.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Login\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

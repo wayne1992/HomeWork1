@@ -13,7 +13,13 @@ namespace HomeWork1.Models
     {
         [Required]
         public int Id { get; set; }
-        
+
+        [Required]
+        public string Account { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]
         [Required]
         public string 客戶名稱 { get; set; }

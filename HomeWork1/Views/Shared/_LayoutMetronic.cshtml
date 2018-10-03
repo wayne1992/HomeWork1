@@ -23,10 +23,10 @@
     <!--end::Web font -->
     <!--begin::Base Styles -->
     <!--begin::Page Vendors -->
-    <link href="~/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Page Vendors -->
-    <link href="~/assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="~/assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Base Styles -->
     <link rel="shortcut icon" href="assets/demo/default/media/img/logo/favicon.ico" />
 </head>
@@ -97,13 +97,25 @@
                                                             <img src="~/Content/assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless" alt="" />
                                                         </div>
                                                         <div class="m-card-user__details">
-                                                            <span class="m-card-user__name m--font-weight-500">
-                                                                Mark Andre
+                                                            <span class="m-card-user__name m--font-weight-500">                                                 
+                                                                    @HttpContext.Current.User.Identity.Name
                                                             </span>
                                                             <a href="" class="m-card-user__email m--font-weight-300 m-link">
                                                                 mark.andre@gmail.com
                                                             </a>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                                <div class="m-dropdown__body">
+                                                    <div class="m-dropdown__content">
+                                                        <ul class="m-nav m-nav--skin-light">
+                                                            <li class="m-nav__separator m-nav__separator--fit"></li>
+                                                            <li class="m-nav__item">
+                                                                <a href="@Url.Action("Loginout", "Login")" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
+                                                                    Logout
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
